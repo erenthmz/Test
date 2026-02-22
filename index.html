@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Little Artist Gallery</title>
+    
+    <!-- Premium Fonts: Outfit for striking headers, Quicksand for soft, readable body text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Quicksand', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Masonry Layout Core */
+        .masonry-grid {
+            column-count: 1;
+            column-gap: 1.5rem;
+        }
+        @media (min-width: 640px) { .masonry-grid { column-count: 2; } }
+        @media (min-width: 1024px) { .masonry-grid { column-count: 3; } }
+        
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+            transform: translateZ(0); /* Hardware acceleration */
+        }
+
+        /* Lightbox transitions */
+        #lightbox { backdrop-filter: blur(12px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .lightbox-content { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #09090b; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+        /* Animation utilities */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 antialiased min-h-screen flex flex-col selection:bg-purple-500/30 selection:text-white">
+
+    <!-- Ambient Background Glows -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-purple-600/10 rounded-full blur-[120px] animate-pulse-slow"></div>
+        <div class="absolute top-[20%] -right-[10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px] animate-pulse-slow" style="animation-delay: 2s;"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="relative z-10 pt-28 pb-20 px-4 text-center">
+        <div class="max-w-4xl mx-auto flex flex-col items-center">
+            
+            <!-- Floating Avatar -->
+            <div class="relative animate-float mb-8 group cursor-pointer">
+                <div class="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full blur opacity-40 group-hover:opacity-75 transition-opacity duration-500"></div>
+                <div class="relative w-28 h-28 bg-zinc-900 border border-zinc-700/50 rounded-full flex items-center justify-center text-5xl shadow-2xl">
+                    🎨
+                </div>
+            </div>
+
+            <!-- Gradient Title -->
+            <h1 class="text-5xl md:text-7xl font-display font-extrabold mb-6 tracking-tight">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
+                    Leo's Masterpieces
+                </span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto font-sans leading-relaxed">
+                A digital archive of imagination, colorful messes, and the world seen through the eyes of a child.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Gallery Section -->
+    <main class="relative z-10 flex-grow max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 pb-24 w-full">
+        
+        <div class="masonry-grid">
+            
+            <!-- 
+                ====================================================================
+                HOW TO ADD NEW DRAWINGS:
+                Copy the <article> block below and paste it anywhere in this grid.
+                Update the 'src' (image link), the <h2> (Title), and the <p> (Details).
+                ====================================================================
+            -->
+
+            <!-- ARTWORK 1 (Vertical layout example) -->
+            <article class="masonry-item reveal group relative rounded-[2rem] overflow-hidden cursor-zoom-in shadow-2xl shadow-black/50 bg-zinc-900" 
+                     onclick="openLightbox('https://images.unsplash.com/photo-1594121285217-14be28892f3e?auto=format&fit=crop&q=80&w=800', 'The Roaring T-Rex', 'Age 4 • Crayons on Paper')">
+                
+                <img src="https://images.unsplash.com/photo-1594121285217-14be28892f3e?auto=format&fit=crop&q=80&w=800" 
+                     alt="Artwork" 
+                     class="w-full h-auto object-cover transform transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                     loading="lazy">
+                
+                <!-- Glassmorphism Hover Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                        <h2 class="font-display font-bold text-2xl md:text-3xl text-white mb-2">The Roaring T-Rex</h2>
+                        <div class="flex items-center space-x-3 text-zinc-300 font-sans font-medium text-sm md:text-base">
+                            <span class="bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">Age 4</span>
+                            <span>•</span>
+                            <span>Crayons</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ARTWORK 2 (Horizontal layout example) -->
+            <article class="masonry-item reveal group relative rounded-[2rem] overflow-hidden cursor-zoom-in shadow-2xl shadow-black/50 bg-zinc-900" 
+                     onclick="openLightbox('https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=800', 'Space Nebula', 'Age 5 • Finger Paint')">
+                
+                <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=800" 
+                     alt="Artwork" 
+                     class="w-full h-auto object-cover transform transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                     loading="lazy">
+                
+                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                        <h2 class="font-display font-bold text-2xl md:text-3xl text-white mb-2">Space Nebula</h2>
+                        <div class="flex items-center space-x-3 text-zinc-300 font-sans font-medium text-sm md:text-base">
+                            <span class="bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">Age 5</span>
+                            <span>•</span>
+                            <span>Finger Paint</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ARTWORK 3 -->
+            <article class="masonry-item reveal group relative rounded-[2rem] overflow-hidden cursor-zoom-in shadow-2xl shadow-black/50 bg-zinc-900" 
+                     onclick="openLightbox('https://images.unsplash.com/photo-1594122230689-45899d9e6f69?auto=format&fit=crop&q=80&w=800', 'Family Roadtrip', 'Age 6 • Color Pencils')">
+                
+                <img src="https://images.unsplash.com/photo-1594122230689-45899d9e6f69?auto=format&fit=crop&q=80&w=800" 
+                     alt="Artwork" 
+                     class="w-full h-auto object-cover transform transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                     loading="lazy">
+                
+                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                        <h2 class="font-display font-bold text-2xl md:text-3xl text-white mb-2">Family Roadtrip</h2>
+                        <div class="flex items-center space-x-3 text-zinc-300 font-sans font-medium text-sm md:text-base">
+                            <span class="bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">Age 6</span>
+                            <span>•</span>
+                            <span>Color Pencils</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- ARTWORK 4 -->
+            <article class="masonry-item reveal group relative rounded-[2rem] overflow-hidden cursor-zoom-in shadow-2xl shadow-black/50 bg-zinc-900" 
+                     onclick="openLightbox('https://images.unsplash.com/photo-1502868814780-87779fdf2379?auto=format&fit=crop&q=80&w=800', 'A Happy Sun', 'Age 3 • Watercolors')">
+                
+                <img src="https://images.unsplash.com/photo-1502868814780-87779fdf2379?auto=format&fit=crop&q=80&w=800" 
+                     alt="Artwork" 
+                     class="w-full h-auto object-cover transform transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                     loading="lazy">
+                
+                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                        <h2 class="font-display font-bold text-2xl md:text-3xl text-white mb-2">A Happy Sun</h2>
+                        <div class="flex items-center space-x-3 text-zinc-300 font-sans font-medium text-sm md:text-base">
+                            <span class="bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">Age 3</span>
+                            <span>•</span>
+                            <span>Watercolors</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+             <!-- ARTWORK 5 -->
+             <article class="masonry-item reveal group relative rounded-[2rem] overflow-hidden cursor-zoom-in shadow-2xl shadow-black/50 bg-zinc-900" 
+                     onclick="openLightbox('https://images.unsplash.com/photo-1602330894082-ec2e1a3b10b0?auto=format&fit=crop&q=80&w=800', 'Monster in the Closet', 'Age 5.5 • Mixed Media')">
+                <img src="https://images.unsplash.com/photo-1602330894082-ec2e1a3b10b0?auto=format&fit=crop&q=80&w=800" alt="Artwork" class="w-full h-auto object-cover transform transition-transform duration-700 ease-out group-hover:scale-[1.03]" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                        <h2 class="font-display font-bold text-2xl md:text-3xl text-white mb-2">Monster in the Closet</h2>
+                        <div class="flex items-center space-x-3 text-zinc-300 font-sans font-medium text-sm md:text-base">
+                            <span class="bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">Age 5.5</span>
+                            <span>•</span>
+                            <span>Mixed Media</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-zinc-800/50 py-10 text-center mt-auto bg-zinc-950/50 backdrop-blur-lg">
+        <p class="text-zinc-500 font-sans font-medium">
+            Curated with <span class="text-pink-500 animate-pulse inline-block">❤️</span> for Leo.<br class="sm:hidden"> 
+            <span class="hidden sm:inline"> | </span> 
+            Stored safely on GitHub.
+        </p>
+    </footer>
+
+    <!-- Cinematic Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 z-50 bg-zinc-950/90 hidden opacity-0 flex flex-col items-center justify-center p-4 sm:p-8 cursor-zoom-out" onclick="closeLightbox()">
+        
+        <!-- Close Button -->
+        <button class="absolute top-6 right-6 text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10 backdrop-blur-md rounded-full p-3 transition-all z-50 border border-white/10 group cursor-pointer" onclick="closeLightbox()" aria-label="Close">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+        <!-- Lightbox Content -->
+        <div class="lightbox-content w-full max-w-6xl max-h-[85vh] flex flex-col items-center scale-95" onclick="event.stopPropagation()">
+            <!-- The Image -->
+            <img id="lightbox-img" src="" alt="Fullscreen Artwork" class="max-w-full max-h-[75vh] object-contain rounded-sm shadow-2xl">
+            
+            <!-- Metadata under image -->
+            <div class="mt-8 text-center text-white w-full max-w-2xl px-4">
+                <h2 id="lightbox-title" class="text-3xl sm:text-4xl font-display font-bold mb-3 tracking-wide">Title</h2>
+                <p id="lightbox-meta" class="text-zinc-400 font-sans font-medium text-lg">Details</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // --- Scroll Reveal Animation ---
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        // Trigger once on load
+        reveal();
+
+
+        // --- Cinematic Lightbox Logic ---
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxTitle = document.getElementById('lightbox-title');
+        const lightboxMeta = document.getElementById('lightbox-meta');
+        const lightboxContent = document.querySelector('.lightbox-content');
+
+        function openLightbox(imageSrc, title, meta) {
+            lightboxImg.src = imageSrc;
+            lightboxTitle.textContent = title;
+            lightboxMeta.textContent = meta;
+
+            lightbox.classList.remove('hidden');
+            
+            // Frame delay to allow CSS transitions to trigger
+            requestAnimationFrame(() => {
+                lightbox.classList.remove('opacity-0');
+                lightboxContent.classList.remove('scale-95');
+                lightboxContent.classList.add('scale-100');
+            });
+
+            document.body.style.overflow = 'hidden'; // Stop background scrolling
+        }
+
+        function closeLightbox() {
+            lightbox.classList.add('opacity-0');
+            lightboxContent.classList.remove('scale-100');
+            lightboxContent.classList.add('scale-95');
+
+            setTimeout(() => {
+                lightbox.classList.add('hidden');
+                lightboxImg.src = ''; 
+                document.body.style.overflow = '';
+            }, 400); 
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && !lightbox.classList.contains('hidden')) {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
